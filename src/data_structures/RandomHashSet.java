@@ -8,9 +8,9 @@ public class RandomHashSet<T> {
     HashSet<T> set;
     ArrayList<T> data;
 
-    public void RandomHashSet(){
-        set = new HashSet<>();
-        data = new ArrayList<>();
+    public RandomHashSet(){
+        this.set = new HashSet<>();
+        this.data = new ArrayList<>();
     }
 
     public boolean contains(T object){
