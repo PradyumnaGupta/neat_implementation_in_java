@@ -8,7 +8,7 @@ public class RandomHashSet<T> {
     HashSet<T> set;
     ArrayList<T> data;
 
-    RandomHashSet(){
+    public void RandomHashSet(){
         set = new HashSet<>();
         data = new ArrayList<>();
     }
@@ -51,7 +51,7 @@ public class RandomHashSet<T> {
     }
 
     public void remove(T object){
-        if (index<0 || index>=data.size()) return;
+        if (!contains(object)) return;
         set.remove(object);
         data.remove(object);
     }
