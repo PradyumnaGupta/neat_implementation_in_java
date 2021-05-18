@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class Neat {
 
     public final static int MAX_NODES = (int)Math.pow(2,20);
+    public final double C1= 1,C2=1,C3=1;
 
     private HashMap<ConnectionGene,ConnectionGene> all_connections = new HashMap<>();
     private RandomHashSet<NodeGene> all_nodes = new RandomHashSet<>();
@@ -60,6 +61,47 @@ public class Neat {
     public NodeGene getNode(int id){
         if(id<all_nodes.size()) return all_nodes.get(id-1);
         else return getNode();
+    }
+
+    public ConnectionGene getConnection(ConnectionGene con){
+        ConnectionGene c = new ConnectionGene(con.getFrom(), con.getTo());
+        c.setEnabled(con.isEnabled());
+        c.setWeight(con.getWeight());
+        return c;
+    }
+
+    public ConnectionGene getConnection(NodeGene node1,NodeGene node2){
+        ConnectionGene connectionGene = new ConnectionGene(node1,node2);
+
+        if(all_connections.containsKey(connectionGene)){
+            connectionGene.setInnovation_number(all_connections.get(connectionGene).getInnovation_number());
+        }
+        else {
+            connectionGene.setInnovation_number(all_connections.size()+1);
+            all_connections.put(connectionGene,connectionGene);
+        }
+
+        return connectionGene;
+    }
+
+    public double getC1() {
+        return C1;
+    }
+
+    public double getC2() {
+        return C2;
+    }
+
+    public double getC3() {
+        return C3;
+    }
+
+    public int getInput_size() {
+        return input_size;
+    }
+
+    public int getOutput_size() {
+        return output_size;
     }
 
     public static void main(String[] args){

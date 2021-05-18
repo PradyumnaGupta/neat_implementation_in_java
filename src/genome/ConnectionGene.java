@@ -10,7 +10,7 @@ public class ConnectionGene extends Gene{
     private double weight;
     private boolean enabled;
 
-    ConnectionGene(NodeGene from,NodeGene to){
+    public ConnectionGene(NodeGene from,NodeGene to){
         this.from = from;
         this.to = to;
     }
@@ -55,7 +55,7 @@ public class ConnectionGene extends Gene{
         }
     }
 
-    public int hashcode(){
+    public int hashCode(){
         return from.getInnovation_number() * Neat.MAX_NODES + to.getInnovation_number();
     }
 }

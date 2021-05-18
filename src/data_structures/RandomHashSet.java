@@ -55,4 +55,8 @@ public class RandomHashSet<T> {
         set.remove(object);
         data.remove(object);
     }
+
+    public ArrayList<T> getData(){
+        return data;
+    }
 }
