@@ -1,5 +1,7 @@
 package data_structures;
 
+import genome.Gene;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -32,6 +34,20 @@ public class RandomHashSet<T> {
             set.add(object);
             data.add(object);
         }
+    }
+
+    public void add_sorted(T object){
+        for(int i=0;i<data.size();i++){
+            int innovation_number = ((Gene)data.get(i)).getInnovation_number();
+            if(((Gene)object).getInnovation_number()<innovation_number){
+                data.add(i,object);
+                set.add(object);
+                return;
+            }
+        }
+        data.add(object);
+        set.add(object);
+        return;
     }
 
     public void clear(){

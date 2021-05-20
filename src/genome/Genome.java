@@ -108,6 +108,81 @@ public class Genome {
         return genome;
     }
 
+    public void mutate(){
+
+    }
+
+    public void mutate_link(){
+        for(int i=0;i<100;i++){
+            NodeGene a = nodes.random_element();
+            NodeGene b = nodes.random_element();
+
+            if(a.getX()==b.getX())
+                continue;
+
+            ConnectionGene con;
+            if(a.getX()<b.getX())
+                con = new ConnectionGene(a,b);
+            else
+                con = new ConnectionGene(b,a);
+
+            if(connections.contains(con))
+                continue;
+
+            con = neat.getConnection(con.getFrom(), con.getTo());
+            con.setWeight((Math.random()*2-1)+neat.getWEIGHT_RANDOM_STRENGTH());
+
+            connections.add_sorted(con);
+        }
+    }
+
+    public void mutate_node(){
+        ConnectionGene con = connections.random_element();
+        if(con==null)
+            return;
+
+        NodeGene from = con.getFrom();
+        NodeGene to = con.getTo();
+
+        NodeGene middle = neat.getNode();
+        middle.setX((from.getX()+to.getX())/2);
+        middle.setY((from.getY()+to.getY())/2);
+
+        ConnectionGene con1 = neat.getConnection(from,middle);
+        ConnectionGene con2 = neat.getConnection(middle,to);
+
+        con1.setWeight(1);
+
+        con2.setWeight(con.getWeight());
+        con2.setEnabled(con.isEnabled());
+
+        connections.remove(con);
+        connections.add(con1);
+        connections.add(con2);
+
+        nodes.add(middle);
+
+
+    }
+
+    public void mutate_weight_shift(){
+        ConnectionGene con = connections.random_element();
+        if(con!=null)
+            con.setWeight(con.getWeight()*(Math.random()*2-1)+neat.getWEIGHT_SHIFT_STRENGTH());
+    }
+
+    public void mutate_weight_random(){
+        ConnectionGene con = connections.random_element();
+        if(con!=null)
+            con.setWeight((Math.random()*2-1)+neat.getWEIGHT_RANDOM_STRENGTH());
+    }
+
+    public void mutate_toggle_link(){
+        ConnectionGene con = connections.random_element();
+        if (con!=null)
+            con.setEnabled(!con.isEnabled());
+    }
+
     public RandomHashSet<ConnectionGene> getConnections() {
         return connections;
     }

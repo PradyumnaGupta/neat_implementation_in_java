@@ -13,6 +13,9 @@ public class Neat {
     public final static int MAX_NODES = (int)Math.pow(2,20);
     public final double C1= 1,C2=1,C3=1;
 
+    private double WEIGHT_SHIFT_STRENGTH = 0.3;
+    private double WEIGHT_RANDOM_STRENGTH = 1;
+
     private HashMap<ConnectionGene,ConnectionGene> all_connections = new HashMap<>();
     private RandomHashSet<NodeGene> all_nodes = new RandomHashSet<>();
     private int input_size;
@@ -102,6 +105,14 @@ public class Neat {
 
     public int getOutput_size() {
         return output_size;
+    }
+
+    public double getWEIGHT_SHIFT_STRENGTH() {
+        return WEIGHT_SHIFT_STRENGTH;
+    }
+
+    public double getWEIGHT_RANDOM_STRENGTH() {
+        return WEIGHT_RANDOM_STRENGTH;
     }
 
     public static void main(String[] args){
