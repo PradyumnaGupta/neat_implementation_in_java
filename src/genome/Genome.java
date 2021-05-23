@@ -1,5 +1,6 @@
 package genome;
 
+import calculator.Calculator;
 import neat.Neat;
 import data_structures.RandomHashSet;
 
@@ -9,6 +10,7 @@ public class Genome {
     private RandomHashSet<NodeGene> nodes = new RandomHashSet<>();
 
     private Neat neat;
+    private Calculator calculator;
 
     public Genome(Neat neat){
         this.neat = neat;
@@ -161,8 +163,6 @@ public class Genome {
         connections.add(con2);
 
         nodes.add(middle);
-
-
     }
 
     public void mutate_weight_shift(){
@@ -181,6 +181,16 @@ public class Genome {
         ConnectionGene con = connections.random_element();
         if (con!=null)
             con.setEnabled(!con.isEnabled());
+    }
+
+    public void generate_calculate(){
+        this.calculator = new Calculator(this);
+    }
+
+    public double[] calculate(double... inputs){
+        if(calculator!=null)
+            return calculator.calculate(inputs);
+        else return null;
     }
 
     public RandomHashSet<ConnectionGene> getConnections() {
