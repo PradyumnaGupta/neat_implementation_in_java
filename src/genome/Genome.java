@@ -10,7 +10,6 @@ public class Genome {
     private RandomHashSet<NodeGene> nodes = new RandomHashSet<>();
 
     private Neat neat;
-    private Calculator calculator;
 
     public Genome(Neat neat){
         this.neat = neat;
@@ -19,8 +18,13 @@ public class Genome {
     public double distance(Genome g2){
         Genome g1 = this;
 
-        int highest_innovation_number_gene1 = g1.getConnections().get(g1.getConnections().size()-1).getInnovation_number();
-        int highest_innovation_number_gene2 = g2.getConnections().get(g2.getConnections().size()-1).getInnovation_number();
+        int highest_innovation_number_gene1 = 0;
+        if(g1.getConnections().size()!=0)
+            highest_innovation_number_gene1 = g1.getConnections().get(g1.getConnections().size()-1).getInnovation_number();
+
+        int highest_innovation_number_gene2 = 0;
+        if(g2.getConnections().size()!=0)
+            highest_innovation_number_gene2 = g2.getConnections().get(g2.getConnections().size()-1).getInnovation_number();
 
         if(highest_innovation_number_gene1<highest_innovation_number_gene2){
             Genome temp = g1;
@@ -181,16 +185,6 @@ public class Genome {
         ConnectionGene con = connections.random_element();
         if (con!=null)
             con.setEnabled(!con.isEnabled());
-    }
-
-    public void generate_calculate(){
-        this.calculator = new Calculator(this);
-    }
-
-    public double[] calculate(double... inputs){
-        if(calculator!=null)
-            return calculator.calculate(inputs);
-        else return null;
     }
 
     public RandomHashSet<ConnectionGene> getConnections() {

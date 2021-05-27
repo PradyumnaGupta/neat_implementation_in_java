@@ -12,6 +12,7 @@ public class Neat {
 
     public final static int MAX_NODES = (int)Math.pow(2,20);
     public final double C1= 1,C2=1,C3=1;
+    private final double CP = 4;
 
     private double WEIGHT_SHIFT_STRENGTH = 0.3;
     private double WEIGHT_RANDOM_STRENGTH = 1;
@@ -68,6 +69,7 @@ public class Neat {
 
     public ConnectionGene getConnection(ConnectionGene con){
         ConnectionGene c = new ConnectionGene(con.getFrom(), con.getTo());
+        c.setInnovation_number(con.getInnovation_number());
         c.setEnabled(con.isEnabled());
         c.setWeight(con.getWeight());
         return c;
@@ -113,6 +115,10 @@ public class Neat {
 
     public double getWEIGHT_RANDOM_STRENGTH() {
         return WEIGHT_RANDOM_STRENGTH;
+    }
+
+    public double getCP() {
+        return CP;
     }
 
     public static void main(String[] args){
