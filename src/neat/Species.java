@@ -59,7 +59,8 @@ public class Species {
                 }
         );
 
-        for(int i=0;i<percentage* clients.size();i++){
+        double amount = percentage * clients.size();
+        for(int i=0;i<amount;i++){
             clients.get(0).setSpecies(null);
             clients.remove(0);
         }
@@ -71,6 +72,11 @@ public class Species {
 
         if(c1.getScore() > c2.getScore()) return Genome.crossover(c1.getGenome(),c2.getGenome());
         else return Genome.crossover(c2.getGenome(),c1.getGenome());
+    }
+
+    public void goExtinct(){
+        for(Client c:clients.getData())
+            c.setSpecies(null);
     }
 
     public int size(){

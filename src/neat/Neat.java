@@ -1,6 +1,7 @@
 package neat;
 
 import data_structures.RandomHashSet;
+import data_structures.RandomSelector;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
@@ -14,11 +15,17 @@ public class Neat {
     public final double C1= 1,C2=1,C3=1;
     private final double CP = 4;
 
+    public final double SURVIVOR = 0.8;
+
     private double WEIGHT_SHIFT_STRENGTH = 0.3;
     private double WEIGHT_RANDOM_STRENGTH = 1;
 
     private HashMap<ConnectionGene,ConnectionGene> all_connections = new HashMap<>();
     private RandomHashSet<NodeGene> all_nodes = new RandomHashSet<>();
+
+    public RandomHashSet<Client> clients = new RandomHashSet<>();
+    public RandomHashSet<Species> species = new RandomHashSet<>();
+
     private int input_size;
     private int output_size;
     private int max_clients;
@@ -42,6 +49,7 @@ public class Neat {
 
         all_connections.clear();
         all_nodes.clear();
+        this.clients.clear();
 
         for(int i=0;i<input_size;i++){
             NodeGene n = getNode();
@@ -53,6 +61,85 @@ public class Neat {
             NodeGene n = getNode();
             n.setX(0.9);
             n.setY((i+1)/(double)(output_size+1));
+        }
+
+        for(int i=0;i<max_clients;i++){
+            Client c = new Client();
+            c.setGenome(empty_genome());
+            this.clients.add(c);
+        }
+
+    }
+
+    public Client getClient(int index){
+        return this.clients.get(index);
+    }
+
+    public void evolve(){
+        gen_species();
+        kill();
+        remove_extinct_species();
+        reproduce();
+        mutate();
+        for(Client c:clients.getData())
+            c.generate_calculator();
+    }
+
+    public void gen_species(){
+        for(Species s:species.getData())
+            s.reset();
+
+        for(Client c: clients.getData()){
+            if(c.getSpecies()!=null) continue;
+            boolean found = false;
+
+            for(Species s: species.getData()){
+                if(s.put(c)){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                species.add(new Species(c));
+            }
+        }
+
+        for(Species s: species.getData())
+            s.evaluate_score();
+    }
+
+    public void kill(){
+        for(Species s: species.getData())
+            s.kill(1-SURVIVOR);
+    }
+
+    public void remove_extinct_species(){
+        for(int i= species.size()-1;i>=0;i--){
+            if(species.get(i).size()<=1){
+                species.get(i).goExtinct();
+                species.remove(i);
+            }
+        }
+    }
+
+    public void reproduce(){
+        RandomSelector<Species> selector = new RandomSelector<>();
+        for(Species s: species.getData()){
+            selector.add(s,s.getScore());
+        }
+
+        for(Client c: clients.getData()){
+            if(c.getSpecies()==null){
+                Species s = selector.random();
+                c.setGenome(s.breed());
+                s.force_put(c);
+            }
+        }
+    }
+
+    public void mutate(){
+        for(Client c:clients.getData()){
+            c.mutate();
         }
     }
 
