@@ -4,8 +4,8 @@ import java.util.ArrayList;;
 
 public class RandomSelector<T> {
 
-    private ArrayList<T> objects;
-    private ArrayList<Double> scores;
+    private ArrayList<T> objects = new ArrayList<>();
+    private ArrayList<Double> scores = new ArrayList<>();
 
     private double total_score = 0;
 
@@ -17,9 +17,7 @@ public class RandomSelector<T> {
 
     public T random(){
         double v = Math.random()*total_score;
-
         double c = 0;
-
         for(int i=0;i< objects.size(); i++){
             c+= scores.get(i);
             if (c>=v)

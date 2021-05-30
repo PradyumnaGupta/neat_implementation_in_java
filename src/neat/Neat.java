@@ -5,7 +5,6 @@ import data_structures.RandomSelector;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
-import org.w3c.dom.Node;
 
 import java.util.HashMap;
 
@@ -19,6 +18,12 @@ public class Neat {
 
     private double WEIGHT_SHIFT_STRENGTH = 0.3;
     private double WEIGHT_RANDOM_STRENGTH = 1;
+
+    private double PROBABILITY_MUTATE_LINK = 0.01;
+    private double PROBABILITY_MUTATE_NODE = 0.003;
+    private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.002;
+    private double PROBABILITY_MUTATE_WEIGHT_RANDOM= 0.002;
+    private double PROBABILITY_MUTATE_TOGGLE_LINK = 0;
 
     private HashMap<ConnectionGene,ConnectionGene> all_connections = new HashMap<>();
     private RandomHashSet<NodeGene> all_nodes = new RandomHashSet<>();
@@ -66,9 +71,9 @@ public class Neat {
         for(int i=0;i<max_clients;i++){
             Client c = new Client();
             c.setGenome(empty_genome());
+            c.generate_calculator();
             this.clients.add(c);
         }
-
     }
 
     public Client getClient(int index){
@@ -150,7 +155,7 @@ public class Neat {
     }
 
     public NodeGene getNode(int id){
-        if(id<all_nodes.size()) return all_nodes.get(id-1);
+        if(id<=all_nodes.size()) return all_nodes.get(id-1);
         else return getNode();
     }
 
@@ -175,6 +180,19 @@ public class Neat {
 
         return connectionGene;
     }
+
+    public void setReplaceIndex(NodeGene node1,NodeGene node2,int index){
+        all_connections.get(new ConnectionGene(node1,node2)).setReplaceIndex(index);
+    }
+
+    public int getReplaceIndex(NodeGene node1,NodeGene node2){
+        ConnectionGene con = new ConnectionGene(node1,node2);
+        ConnectionGene data = all_connections.get(con);
+        if(data == null) return 0;
+        else return data.getReplaceIndex();
+    }
+
+    public int set;
 
     public double getC1() {
         return C1;
@@ -208,9 +226,53 @@ public class Neat {
         return CP;
     }
 
-    public static void main(String[] args){
-        Neat neat = new Neat(3,3,3);
-        Genome g = neat.empty_genome();
-        System.out.println(g.getNodes().size());
+    public double getPROBABILITY_MUTATE_LINK() {
+        return PROBABILITY_MUTATE_LINK;
+    }
+
+    public double getPROBABILITY_MUTATE_NODE() {
+        return PROBABILITY_MUTATE_NODE;
+    }
+
+    public double getPROBABILITY_MUTATE_WEIGHT_SHIFT() {
+        return PROBABILITY_MUTATE_WEIGHT_SHIFT;
+    }
+
+    public double getPROBABILITY_MUTATE_WEIGHT_RANDOM() {
+        return PROBABILITY_MUTATE_WEIGHT_RANDOM;
+    }
+
+    public double getPROBABILITY_MUTATE_TOGGLE_LINK() {
+        return PROBABILITY_MUTATE_TOGGLE_LINK;
+    }
+
+    //    public static void main(String[] args){
+//        Neat neat = new Neat(3,3,3);
+//        Genome g = neat.empty_genome();
+//        System.out.println(g.getNodes().size());
+//    }
+
+    public void printSpecies() {
+        System.out.println("##########################################");
+        for(Species s:this.species.getData()){
+            System.out.println(s + "  " + s.getScore() + "  " + s.size());
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Neat neat = new Neat(1000,10,1);
+
+        double[] in = new double[10];
+        for(int i = 0; i < 10; i++) in[i] = Math.random();
+
+        for(int i = 0; i < 1000; i++){
+            for(Client c:neat.clients.getData()){
+                double score = c.calculate(in)[0];
+                c.setScore(score);
+            }
+            neat.evolve();
+            neat.printSpecies();
+        }
     }
 }

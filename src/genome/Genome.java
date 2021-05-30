@@ -1,6 +1,5 @@
 package genome;
 
-import calculator.Calculator;
 import neat.Neat;
 import data_structures.RandomHashSet;
 
@@ -58,7 +57,7 @@ public class Genome {
                 index_g1++;
             }
         }
-        weight_diff /= similar;
+        weight_diff /= Math.max(1,similar);
         excess = g1.getConnections().size()-index_g1;
 
         double N = Math.max(g1.getConnections().size(),g2.getConnections().size());
@@ -115,7 +114,17 @@ public class Genome {
     }
 
     public void mutate(){
-
+        if(neat.getPROBABILITY_MUTATE_LINK() > Math.random()){
+            mutate_link();
+        }if(neat.getPROBABILITY_MUTATE_NODE() > Math.random()){
+            mutate_node();
+        }if(neat.getPROBABILITY_MUTATE_WEIGHT_SHIFT() > Math.random()){
+            mutate_weight_shift();
+        }if(neat.getPROBABILITY_MUTATE_WEIGHT_RANDOM() > Math.random()){
+            mutate_weight_random();
+        }if(neat.getPROBABILITY_MUTATE_TOGGLE_LINK() > Math.random()){
+            mutate_link_toggle();
+        }
     }
 
     public void mutate_link(){
@@ -123,6 +132,7 @@ public class Genome {
             NodeGene a = nodes.random_element();
             NodeGene b = nodes.random_element();
 
+            if(a==null||b==null) continue;
             if(a.getX()==b.getX())
                 continue;
 
@@ -150,9 +160,17 @@ public class Genome {
         NodeGene from = con.getFrom();
         NodeGene to = con.getTo();
 
-        NodeGene middle = neat.getNode();
-        middle.setX((from.getX()+to.getX())/2);
-        middle.setY((from.getY()+to.getY())/2);
+        int replaceIndex = neat.getReplaceIndex(from,to);
+        NodeGene middle;
+
+        if(replaceIndex == 0){
+            middle = neat.getNode();
+            middle.setX((from.getX()+to.getX())/2);
+            middle.setY((from.getY()+to.getY())/2);
+            neat.setReplaceIndex(from,to,middle.getInnovation_number());
+        }
+        else
+            middle = neat.getNode(replaceIndex);
 
         ConnectionGene con1 = neat.getConnection(from,middle);
         ConnectionGene con2 = neat.getConnection(middle,to);
@@ -181,7 +199,7 @@ public class Genome {
             con.setWeight((Math.random()*2-1)+neat.getWEIGHT_RANDOM_STRENGTH());
     }
 
-    public void mutate_toggle_link(){
+    public void mutate_link_toggle(){
         ConnectionGene con = connections.random_element();
         if (con!=null)
             con.setEnabled(!con.isEnabled());

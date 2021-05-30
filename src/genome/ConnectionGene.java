@@ -7,6 +7,8 @@ public class ConnectionGene extends Gene{
     private NodeGene from;
     private NodeGene to;
 
+    private int replaceIndex;
+
     private double weight;
     private boolean enabled;
 
@@ -57,5 +59,13 @@ public class ConnectionGene extends Gene{
 
     public int hashCode(){
         return from.getInnovation_number() * Neat.MAX_NODES + to.getInnovation_number();
+    }
+
+    public int getReplaceIndex() {
+        return replaceIndex;
+    }
+
+    public void setReplaceIndex(int replaceIndex) {
+        this.replaceIndex = replaceIndex;
     }
 }

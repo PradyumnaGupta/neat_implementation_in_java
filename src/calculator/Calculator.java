@@ -24,7 +24,6 @@ public class Calculator {
         for(NodeGene n:nodes.getData()){
             Node node = new Node(n.getX());
             nodeHashMap.put(n.getInnovation_number(),node);
-
             if(n.getX()<=0.1)
                 input_nodes.add(node);
             else if(n.getX()>=0.9)
